@@ -1,21 +1,20 @@
 package com.example.compose.jetsurvey.signinsignup
 
 import android.media.tv.TvContract
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
+import androidx.compose.ui.layout.boundsInParent
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -34,9 +33,30 @@ sealed class WelcomeEvent {
 @Composable
 fun WelcomeScreen(
 ) {
-    Column {
-        Branding()
-        SignInCreateAccount(onEvent = {}, onFocusChange = {},
+    var brandingBottom by remember { mutableStateOf(0f) }
+    var showBranding by remember { mutableStateOf(true) }
+    val currentOffsetHolder = remember { mutableStateOf(0f) }
+
+    currentOffsetHolder.value = if (showBranding) 0f else -brandingBottom
+    val currentOffsetHolderDp =
+        with(LocalDensity.current) { currentOffsetHolder.value.toDp() }
+
+    val offset by animateDpAsState(targetValue = currentOffsetHolderDp)
+
+
+    Column(
+        modifier = Modifier.offset(y = offset)
+    ) {
+        Branding(modifier = Modifier.onGloballyPositioned {
+            if (brandingBottom == 0f) {
+                brandingBottom = it.boundsInParent().bottom
+            }
+        })
+
+        SignInCreateAccount(onEvent = {},
+            onFocusChange = { focused ->
+                showBranding = !focused
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp))
@@ -45,7 +65,7 @@ fun WelcomeScreen(
 
 
 @Composable
-fun SignInCreateAccount(
+private fun SignInCreateAccount(
     onEvent: (WelcomeEvent) -> Unit,
     onFocusChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -70,6 +90,7 @@ fun SignInCreateAccount(
                 emailState.enableShowErrors()
             }
         }
+        onFocusChange(emailState.isFocused)
         Email(
             emailState = emailState,
             imeAction = ImeAction.Default,
@@ -142,10 +163,10 @@ fun Email(
     OutlinedTextField(
         value = emailState.text,
         onValueChange = {
-
+            emailState.text = it
         },
         label = {
-            CompositionLocalProvider(LocalContentAlpha provides androidx.compose.material.ContentAlpha.medium) {
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
                 Text(
                     text = stringResource(id = R.string.email),
                     style = MaterialTheme.typography.body2
@@ -154,19 +175,23 @@ fun Email(
         },
         modifier = Modifier
             .fillMaxWidth()
-            .onFocusChanged {
-
+            .onFocusChanged { focusState ->
+                emailState.onFocusChange(focusState.isFocused)
+                if (!focusState.isFocused) {
+                    emailState.enableShowErrors()
+                }
             },
         textStyle = MaterialTheme.typography.body2,
         isError = emailState.showErrors(),
         keyboardOptions = KeyboardOptions.Default.copy(imeAction = imeAction),
-        keyboardActions = KeyboardActions(onDone = {
-            onImeAction()
-        })
-
+        keyboardActions = KeyboardActions(
+            onDone = {
+                onImeAction()
+            }
+        )
     )
 
-
+    emailState.getError()?.let { error -> TextFieldError(textError = error) }
 }
 
 @Preview
