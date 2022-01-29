@@ -1,4 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+import com.example.compose.jetsurvey.buildsrc.Libs
+import com.example.compose.jetsurvey.buildsrc.Versions
 buildscript {
     ext {
         compose_version = '1.0.1'

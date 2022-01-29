@@ -22,7 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
-import com.example.compose.jetsurvey.ui.theme.JetSurveyTheme
+import com.example.compose.jetsurvey.theme.JetSurveyTheme
 
 
 sealed class WelcomeEvent {
@@ -32,6 +32,7 @@ sealed class WelcomeEvent {
 
 @Composable
 fun WelcomeScreen(
+    onEvent: (WelcomeEvent) -> Unit,
 ) {
     var brandingBottom by remember { mutableStateOf(0f) }
     var showBranding by remember { mutableStateOf(true) }
@@ -53,7 +54,7 @@ fun WelcomeScreen(
             }
         })
 
-        SignInCreateAccount(onEvent = {},
+        SignInCreateAccount(onEvent = onEvent,
             onFocusChange = { focused ->
                 showBranding = !focused
             },
@@ -108,7 +109,11 @@ private fun SignInCreateAccount(
             )
         }
 
-        OrSignInAsGuest()
+        OrSignInAsGuest(
+            onSignedInAsGuest = {
+                onEvent(WelcomeEvent.SignInAsGuest)
+            }
+        )
     }
 
 }
@@ -200,7 +205,7 @@ fun PreviewWelcomeUI(
 ) {
     JetSurveyTheme {
         androidx.compose.material.Surface(modifier = Modifier.fillMaxWidth()) {
-            WelcomeScreen()
+//            WelcomeScreen()
         }
     }
 }

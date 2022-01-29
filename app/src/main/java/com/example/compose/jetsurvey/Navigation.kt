@@ -36,8 +36,8 @@ fun Fragment.navigate(to: Screen, from: Screen) {
 //        Screen.SignIn -> {
 //            findNavController().navigate(R.id.sign_in_fragment)
 //        }
-//        Screen.Survey -> {
-//            findNavController().navigate(R.id.survey_fragment)
-//        }
+        Screen.Survey -> {
+            findNavController().navigate(R.id.survey_fragment)
+        }
     }
 }

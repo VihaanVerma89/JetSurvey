@@ -10,11 +10,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
-import com.example.compose.jetsurvey.ui.theme.JetSurveyTheme
+import com.example.compose.jetsurvey.theme.JetSurveyTheme
 
 @Composable
 fun OrSignInAsGuest(
-
+    onSignedInAsGuest: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -30,7 +31,7 @@ fun OrSignInAsGuest(
 
         }
         OutlinedButton(
-            onClick = { /*TODO*/ },
+            onClick = onSignedInAsGuest,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(

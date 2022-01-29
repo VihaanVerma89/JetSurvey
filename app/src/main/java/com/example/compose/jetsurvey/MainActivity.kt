@@ -11,7 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.compose.jetsurvey.ui.theme.JetSurveyTheme
+import com.example.compose.jetsurvey.theme.JetSurveyTheme
+
 import com.google.android.material.navigation.NavigationView
 
 class MainActivity : AppCompatActivity() {

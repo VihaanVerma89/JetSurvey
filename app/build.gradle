@@ -1,3 +1,5 @@
+import com.example.compose.jetsurvey.buildsrc.Libs
+
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
@@ -49,19 +51,29 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.4.0'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.material:material:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0'
-    implementation 'androidx.activity:activity-compose:1.4.0'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
-    testImplementation 'junit:junit:4.+'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
-    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+    implementation Libs.Kotlin.stdlib
+    implementation Libs.Coroutines.android
+
+    implementation Libs.AndroidX.coreKtx
+    implementation Libs.AndroidX.appcompat
+    implementation Libs.AndroidX.Navigation.fragment
+    implementation Libs.AndroidX.Navigation.uiKtx
+    implementation Libs.AndroidX.Material.material
+    implementation Libs.material
+
+    implementation Libs.AndroidX.Lifecycle.viewmodel
+    implementation Libs.AndroidX.Lifecycle.viewModelCompose
+
+    implementation Libs.AndroidX.Activity.activityCompose
+
+    implementation Libs.AndroidX.Compose.layout
+    implementation Libs.AndroidX.Compose.material
+    implementation Libs.AndroidX.Compose.materialIconsExtended
+    implementation Libs.AndroidX.Compose.tooling
+    implementation Libs.AndroidX.Compose.runtime
+    implementation Libs.AndroidX.Compose.runtimeLivedata
+
+    implementation Libs.Accompanist.permissions
+
+    implementation Libs.Coil.coilCompose
 }
