@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -21,6 +22,61 @@ import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetSurveyTheme
 import com.example.compose.jetsurvey.theme.progressIndicatorBackground
 
+
+@Composable
+fun SurveyQuestionScreen(
+    questions: SurveyState.Questions,
+    shouldAskPermissions: Boolean,
+    onDoNotAskForPermissions: () -> Unit,
+    onAction: (Int, SurveyActionType) -> Unit,
+    onDonePressed: () -> Unit,
+    onBackPressed: () -> Unit,
+    openSettings: () -> Unit,
+) {
+    val questionState = remember(questions.currentQuestionIndex) {
+        questions.questionsState[questions.currentQuestionIndex]
+    }
+
+    Surface {
+        Scaffold(
+            topBar = {
+                SurveyTopAppBar(
+                    questionIndex = questionState.questionIndex,
+                    totalQuestionsCount = questionState.totalQuestionsCount,
+                    onBackPressed = onBackPressed
+                )
+            },
+            content = { innerPadding ->
+                Question(
+                    question = questionState.question,
+                    answer = questionState.answer,
+                    shouldAskPermissions = shouldAskPermissions,
+                    onAnswer = {
+                        if (it !is Answer.PermissionsDenied) {
+                            questionState.answer = it
+                        }
+                        questionState.enableNext = true
+                    },
+                    onAction = onAction,
+                    openSettings = openSettings,
+                    onDoNotAskForPermissions = onDoNotAskForPermissions,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                )
+            },
+
+            bottomBar = {
+                SurveyBottomBar(
+                    questionState = questionState,
+                    onPreviousPressed = { questions.currentQuestionIndex-- },
+                    onNextPressed = { questions.currentQuestionIndex++ },
+                    onDonePressed = onDonePressed
+                )
+            }
+        )
+    }
+}
 
 @Composable
 fun SurveyTopAppBar(
@@ -90,16 +146,15 @@ fun SurveyBottomBar(
                 Text(text = stringResource(id = R.string.done))
             }
         } else {
-            Button(onClick = { /*TODO*/ }) {
+            Button(onClick = onNextPressed) {
                 Text(text = stringResource(id = R.string.next))
             }
-
         }
     }
 }
 
 @Composable
-private fun TopAppBarTitle(
+fun TopAppBarTitle(
     questionIndex: Int,
     totalQuestionsCount: Int,
     modifier: Modifier = Modifier,
@@ -129,25 +184,6 @@ fun PreviewSurveyScreen(
 ) {
 
     JetSurveyTheme {
-        Column {
-            SurveyTopAppBar(questionIndex = 0, totalQuestionsCount = 6) {
-
-            }
-            val question = jetpackQuestions.get(0)
-            val questionState = QuestionState(
-                question = question,
-                questionIndex = 0,
-                totalQuestionsCount = jetpackQuestions.size,
-                showPrevious = true,
-                showDone = false
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            SurveyBottomBar(questionState = questionState,
-                onPreviousPressed = { /*TODO*/ },
-                onNextPressed = { /*TODO*/ }) { }
-        }
 
     }
 
