@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
@@ -528,6 +529,12 @@ private fun QuestionContent(
                     onAction = onAction,
                     modifier = Modifier.fillParentMaxWidth()
                 )
+                is PossibleAnswer.Slider -> SliderQuestion(
+                    possibleAnswer = question.answer,
+                    answer = answer as Answer.Slider?,
+                    onAnswerSelected = { onAnswer(Answer.Slider(it)) },
+                    modifier = Modifier.fillParentMaxWidth()
+                )
                 else -> {
                     Text(text = "unsupported")
                 }
@@ -647,5 +654,61 @@ fun PreviewDateQuestion(
 ) {
 
     JetSurveyTheme {
+    }
+}
+@Composable
+fun SliderQuestion(
+    possibleAnswer: PossibleAnswer.Slider,
+    answer: Answer.Slider?,
+    onAnswerSelected: (Float) -> Unit,
+    modifier: Modifier = Modifier
+) {
+
+    var sliderPosition by remember {
+        mutableStateOf(answer?.answerValue ?: possibleAnswer.defaultValue)
+    }
+
+
+    Row(modifier = modifier) {
+
+        Slider(
+            value = sliderPosition,
+            onValueChange = {
+                sliderPosition = it
+                onAnswerSelected(it)
+            },
+            valueRange = possibleAnswer.range,
+            steps = possibleAnswer.steps,
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 16.dp)
+        )
+    }
+
+    Row {
+        Text(
+            text = stringResource(id = possibleAnswer.startText),
+            style = MaterialTheme.typography.caption,
+            textAlign = TextAlign.Start,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1.8f)
+        )
+        Text(
+            text = stringResource(id = possibleAnswer.neutralText),
+            style = MaterialTheme.typography.caption,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1.8f)
+        )
+        Text(
+            text = stringResource(id = possibleAnswer.endText),
+            style = MaterialTheme.typography.caption,
+            textAlign = TextAlign.End,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1.8f)
+        )
     }
 }

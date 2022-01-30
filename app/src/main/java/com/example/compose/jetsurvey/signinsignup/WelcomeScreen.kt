@@ -1,4 +1,4 @@
-package com.example.compose.jetsurvey.signinsignup
+tackage com.example.compose.jetsurvey.signinsignup
 
 import android.media.tv.TvContract
 import androidx.compose.animation.core.animateDpAsState
