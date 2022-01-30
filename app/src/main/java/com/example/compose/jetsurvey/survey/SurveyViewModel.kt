@@ -38,7 +38,11 @@ class SurveyViewModel(
         }
     }
 
-
+    fun computeResult(surveyQuestions: SurveyState.Questions) {
+        val answers = surveyQuestions.questionsState.mapNotNull { it.answer }
+        val result = surveyRepository.getSurveyResult(answers)
+        _uiState.value = SurveyState.Result(surveyQuestions.surveyTitle, result)
+    }
 }
 
 class SurveyViewModelFactory(

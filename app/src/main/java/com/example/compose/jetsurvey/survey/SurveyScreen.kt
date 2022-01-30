@@ -134,23 +134,52 @@ fun SurveyBottomBar(
     onDonePressed: () -> Unit,
 ) {
 
-    Row {
-        if (questionState.showPrevious) {
-            OutlinedButton(onClick = onPreviousPressed) {
-                Text(text = stringResource(id = R.string.previous))
-            }
-        }
 
-        if (questionState.showDone) {
-            Button(onClick = { /*TODO*/ }) {
-                Text(text = stringResource(id = R.string.done))
+    Surface(
+        elevation = 8.dp,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 20.dp)
+        ) {
+            if (questionState.showPrevious) {
+                OutlinedButton(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp),
+                    onClick = onPreviousPressed) {
+                    Text(text = stringResource(id = R.string.previous))
+                }
+                Spacer(modifier = Modifier.width(16.dp))
             }
-        } else {
-            Button(onClick = onNextPressed) {
-                Text(text = stringResource(id = R.string.next))
+
+            if (questionState.showDone) {
+                Button(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp),
+                    onClick = onDonePressed,
+                    enabled = questionState.enableNext
+                ) {
+                    Text(text = stringResource(id = R.string.done))
+                }
+            } else {
+                Button(
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp),
+                    onClick = onNextPressed,
+                    enabled = questionState.enableNext
+                ) {
+                    Text(text = stringResource(id = R.string.next))
+                }
             }
         }
     }
+
 }
 
 @Composable

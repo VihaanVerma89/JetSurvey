@@ -43,7 +43,9 @@ class SurveyFragment : Fragment() {
                                 shouldAskPermissions = false,
                                 onAction = { id, action ->  },
                                 onDoNotAskForPermissions = {},
-                                onDonePressed = {},
+                                onDonePressed = {
+
+                                },
                                 onBackPressed = {
                                     activity?.onBackPressedDispatcher?.onBackPressed()
                                 },
