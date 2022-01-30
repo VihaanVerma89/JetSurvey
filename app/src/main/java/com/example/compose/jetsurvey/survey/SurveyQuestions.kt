@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,6 +23,8 @@ import androidx.compose.ui.unit.dp
 import com.example.compose.jetsurvey.R
 import com.example.compose.jetsurvey.theme.JetSurveyTheme
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 @Preview()
@@ -517,6 +521,13 @@ private fun QuestionContent(
                     },
                     modifier = Modifier.fillMaxWidth()
                 )
+                is PossibleAnswer.Action -> ActionQuestion(
+                    questionId = question.id,
+                    possibleAnswer = question.answer,
+                    answer = answer as Answer.Action?,
+                    onAction = onAction,
+                    modifier = Modifier.fillParentMaxWidth()
+                )
                 else -> {
                     Text(text = "unsupported")
                 }
@@ -554,5 +565,87 @@ fun PreviewQuestion(
             onDoNotAskForPermissions = {},
             openSettings = {}
         )
+    }
+}
+
+
+@Composable
+private fun ActionQuestion(
+    questionId: Int,
+    possibleAnswer: PossibleAnswer.Action,
+    answer: Answer.Action?,
+    onAction: (Int, SurveyActionType) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    when (possibleAnswer.actionType) {
+        SurveyActionType.PICK_DATE -> {
+            DateQuestion(
+                questionId = questionId,
+                answer = answer,
+                onAction = onAction,
+                modifier = modifier
+            )
+        }
+        SurveyActionType.TAKE_PHOTO -> {
+//            PhotoQuestion(
+//                questionId = questionId,
+//                answer = answer,
+//                onAction = onAction,
+//                modifier = modifier
+//            )
+        }
+        SurveyActionType.SELECT_CONTACT -> TODO()
+    }
+}
+
+@Composable
+fun DateQuestion(
+    questionId: Int,
+    answer: Answer.Action?,
+    onAction: (Int, SurveyActionType) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+
+    val date = if (answer != null && answer.result is SurveyActionResult.Date) {
+        answer.result.date
+    } else {
+        SimpleDateFormat(simpleDateFormatPattern, Locale.getDefault()).format(Date())
+    }
+
+    Button(
+        onClick = { onAction(questionId, SurveyActionType.PICK_DATE) },
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = MaterialTheme.colors.onPrimary,
+            contentColor = MaterialTheme.colors.onSecondary
+        ),
+        shape = MaterialTheme.shapes.small,
+        modifier = Modifier
+            .padding(vertical = 20.dp)
+            .height(54.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colors.onSurface.copy(alpha = 0.12f))
+    ) {
+        Text(
+            text = date,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1.8f)
+        )
+        Icon(
+            imageVector = Icons.Filled.ArrowDropDown,
+            contentDescription = null,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(0.2f)
+        )
+    }
+}
+
+@Preview
+@Composable
+fun PreviewDateQuestion(
+
+) {
+
+    JetSurveyTheme {
     }
 }
